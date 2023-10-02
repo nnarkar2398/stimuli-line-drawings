@@ -1,6 +1,9 @@
+#libraries
 from PIL import Image, ImageDraw, ImageColor
 
+#image size
 im = Image.new('RGB', (100, 100))
+
 
 draw = ImageDraw.Draw(im)
 #draw.line((0, 0) + im.size, fill= 0)
