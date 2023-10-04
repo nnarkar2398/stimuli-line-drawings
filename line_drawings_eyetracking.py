@@ -8,12 +8,13 @@ from PIL import Image, ImageDraw
 # Define constants
 cnt = 0
 num_images = 20
-image_size = 120
-num_rows = 3
-num_cols = 3
+square_size = 3
+num_rows = square_size
+num_cols = square_size
 num_points = num_rows * num_cols
 num_max_lines = 12
-line_size = (image_size - 10) / 2
+line_size = 50
+image_size = line_size * (num_rows - 1) + 10
 directions = ["left", "right", "up", "down"]
 directionsTopLeftCorner = ["right", "down"]
 directionsTopRightCorner = ["left", "down"]
