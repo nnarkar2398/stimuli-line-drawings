@@ -7,13 +7,14 @@ from PIL import Image, ImageDraw
 
 # Define constants
 cnt = 0
-num_images = 9
-image_size = 120
-num_rows = 3
-num_cols = 3
+num_images = 20
+square_size = 3
+num_rows = square_size
+num_cols = square_size
 num_points = num_rows * num_cols
 num_max_lines = 12
-line_size = (image_size - 10) / 2
+line_size = 50
+image_size = line_size * (num_rows - 1) + 10
 directions = ["left", "right", "up", "down"]
 directionsTopLeftCorner = ["right", "down"]
 directionsTopRightCorner = ["left", "down"]
@@ -76,10 +77,29 @@ def get_x_y_values(row_xy, col_xy, direction_xy):
     return p_x1, p_y1, p_x2, p_y2
 
 
+def is_visited(x, y):
+    if (x, y) in visited:
+        return True
+    else:
+        return False
+
+
+def generate_coordinates():
+    point_location = random.randrange(0, num_points)
+    row = floor(point_location / 3)
+    col = point_location % 3
+
+    direction_set = get_direction_set(row, col)
+    direction = random.choice(direction_set)
+
+    return get_x_y_values(row, col, direction)
+
+
 # loop for each image
 for i in range(num_images):
     # init
     num_lines = random.randrange(1, num_max_lines + 1)
+    visited = {(-1, -1)}
 
     # image details
     im = Image.new('RGB', (image_size, image_size))
@@ -87,15 +107,16 @@ for i in range(num_images):
 
     # draw each line
     for j in range(num_lines):
-        point_location = random.randrange(0, num_points)
-        row = floor(point_location / 3)
-        col = point_location % 3
+        x1, y1, x2, y2 = generate_coordinates()
+        if j == 0:
+            visited.add((x1, y1))
+            visited.add((x2, y2))
+        else:
+            while not is_visited(x1, y1) and not is_visited(x2, y2):
+                x1, y1, x2, y2 = generate_coordinates()
+            visited.add((x1, y1))
+            visited.add((x2, y2))
 
-        directionSet = get_direction_set(row, col)
-        direction = random.choice(directionSet)
-        print(direction)
-
-        x1, y1, x2, y2 = get_x_y_values(row, col, direction)
         draw_basic_line(draw, x1, y1, x2, y2)
 
     # save image to file
