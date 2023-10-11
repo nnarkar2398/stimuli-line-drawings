@@ -6,15 +6,18 @@ from math import floor
 from PIL import Image, ImageDraw
 
 # Define constants
-cnt = 0
 num_images = 20
+num_min_lines = 4
+num_max_lines = 5
 square_size = 3
+
 num_rows = square_size
 num_cols = square_size
 num_points = num_rows * num_cols
-num_max_lines = 12
+
 line_size = 50
 image_size = line_size * (num_rows - 1) + 10
+
 directions = ["left", "right", "up", "down"]
 directionsTopLeftCorner = ["right", "down"]
 directionsTopRightCorner = ["left", "down"]
@@ -77,13 +80,6 @@ def get_x_y_values(row_xy, col_xy, direction_xy):
     return p_x1, p_y1, p_x2, p_y2
 
 
-def is_visited(x, y):
-    if (x, y) in visited:
-        return True
-    else:
-        return False
-
-
 def generate_coordinates():
     point_location = random.randrange(0, num_points)
     row = floor(point_location / 3)
@@ -95,14 +91,22 @@ def generate_coordinates():
     return get_x_y_values(row, col, direction)
 
 
-# loop for each image
-for i in range(num_images):
-    # init
-    num_lines = random.randrange(1, num_max_lines + 1)
-    visited = {(-1, -1)}
+def check_to_regenerate(x1, y1, x2, y2, line_set, visited):
+    if (x1, y1, x2, y2) in line_set:
+        return True
+    else:
+        if (x1, y1) not in visited and (x2, y2) not in visited:
+            return True
+        else:
+            return False
 
-    # image details
-    im = Image.new('RGB', (image_size, image_size))
+
+def generate_image(im):
+    # init
+    num_lines = random.randrange(num_min_lines, num_max_lines + 1)
+    visited = {(-1, -1)}
+    line_set = {(-1, -1, -1, -1)}
+
     draw = ImageDraw.Draw(im)
 
     # draw each line
@@ -111,13 +115,25 @@ for i in range(num_images):
         if j == 0:
             visited.add((x1, y1))
             visited.add((x2, y2))
+            line_set.add((x1, y1, x2, y2))
+            line_set.add((x2, y2, x1, y1))
+
         else:
-            while not is_visited(x1, y1) and not is_visited(x2, y2):
+            while check_to_regenerate(x1, y1, x2, y2, line_set, visited):
                 x1, y1, x2, y2 = generate_coordinates()
+
             visited.add((x1, y1))
             visited.add((x2, y2))
-
+            line_set.add((x1, y1, x2, y2))
+            line_set.add((x2, y2, x1, y1))
         draw_basic_line(draw, x1, y1, x2, y2)
+
+
+# loop for each image
+for i in range(num_images):
+    # image details
+    im = Image.new('RGB', (image_size, image_size))
+    generate_image(im)
 
     # save image to file
     im.save(dir + "/test" + str(i + 1) + ".png")
