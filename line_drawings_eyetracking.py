@@ -14,7 +14,7 @@ square_size = 3
 num_rows = square_size
 num_cols = square_size
 num_points = num_rows * num_cols
-image_set = list()
+image_list = list()
 
 line_size = 50
 image_size = line_size * (num_rows - 1) + 10
@@ -139,9 +139,9 @@ for i in range(num_images):
     image = generate_image(im)
 
     # save image to file
-    if image not in image_set:
+    if image not in image_list:
         im.save(dir + "/test" + str(i + 1) + ".png")
-        image_set.append(image)
+        image_list.append(image)
         print(i + 1, "th image generated")
     else:
         # im.save(dir + "/test" + str(i + 1) + "_dupe.png")
