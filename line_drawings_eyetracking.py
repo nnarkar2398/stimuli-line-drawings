@@ -7,9 +7,9 @@ from PIL import Image, ImageDraw
 
 # Define constants
 num_images = 100
-num_min_lines = 3
-num_max_lines = 4
-square_size = 3
+num_min_lines = 12
+num_max_lines = 13
+square_size = 4
 
 num_rows = square_size
 num_cols = square_size
@@ -84,8 +84,8 @@ def get_x_y_values(row_xy, col_xy, direction_xy):
 
 def generate_coordinates():
     point_location = random.randrange(0, num_points)
-    row = floor(point_location / 3)
-    col = point_location % 3
+    row = floor(point_location / num_rows)
+    col = point_location % num_cols
 
     direction_set = get_direction_set(row, col)
     direction = random.choice(direction_set)
