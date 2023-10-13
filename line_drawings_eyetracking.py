@@ -6,14 +6,15 @@ from math import floor
 from PIL import Image, ImageDraw
 
 # Define constants
-num_images = 20
-num_min_lines = 4
-num_max_lines = 5
+num_images = 30
+num_min_lines = 3
+num_max_lines = 4
 square_size = 3
 
 num_rows = square_size
 num_cols = square_size
 num_points = num_rows * num_cols
+image_set = list()
 
 line_size = 50
 image_size = line_size * (num_rows - 1) + 10
@@ -104,8 +105,8 @@ def check_to_regenerate(x1, y1, x2, y2, line_set, visited):
 def generate_image(im):
     # init
     num_lines = random.randrange(num_min_lines, num_max_lines + 1)
-    visited = {(-1, -1)}
-    line_set = {(-1, -1, -1, -1)}
+    visited = set()
+    line_set = set()
 
     draw = ImageDraw.Draw(im)
 
@@ -128,13 +129,21 @@ def generate_image(im):
             line_set.add((x2, y2, x1, y1))
         draw_basic_line(draw, x1, y1, x2, y2)
 
+    return list(line_set)
+
 
 # loop for each image
 for i in range(num_images):
     # image details
     im = Image.new('RGB', (image_size, image_size))
-    generate_image(im)
+    image = generate_image(im)
 
     # save image to file
-    im.save(dir + "/test" + str(i + 1) + ".png")
-    print(i + 1, "th image generated")
+    if image not in image_set:
+        im.save(dir + "/test" + str(i + 1) + ".png")
+        image_set.append(image)
+        print(i + 1, "th image generated")
+    else:
+        # im.save(dir + "/test" + str(i + 1) + "_dupe.png")
+        print("dupe - did not generate")
+    im.close()
