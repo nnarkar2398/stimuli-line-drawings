@@ -6,7 +6,7 @@ from math import floor
 from PIL import Image, ImageDraw
 
 # Define constants
-num_images = 30
+num_images = 100
 num_min_lines = 3
 num_max_lines = 4
 square_size = 3
@@ -15,6 +15,7 @@ num_rows = square_size
 num_cols = square_size
 num_points = num_rows * num_cols
 image_list = list()
+cnt = 0
 
 line_size = 50
 image_size = line_size * (num_rows - 1) + 10
@@ -140,9 +141,11 @@ for i in range(num_images):
 
     # save image to file
     if image not in image_list:
-        im.save(dir + "/test" + str(i + 1) + ".png")
+        cnt += 1
+        im.save(dir + "/test" + str(cnt) + ".png")
         image_list.append(image)
-        print(i + 1, "th image generated")
+
+        print(cnt, "th image generated")
     else:
         # im.save(dir + "/test" + str(i + 1) + "_dupe.png")
         print("dupe - did not generate")
